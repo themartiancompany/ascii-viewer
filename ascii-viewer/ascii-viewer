@@ -97,8 +97,10 @@ _encode() {
     mktemp \
       --suffix=".txt")"
   cacawrite \
+    -v \
     "${_in}" \
-    "${_out}"
+    "${_out}" || \
+    true
   _in=(
     "${_out}"
   )
@@ -139,8 +141,10 @@ _ascii_viewer() {
     _view_picture
   fi
   _encode
+  echo \
+    "${_in[*]}"
   cat \
-    "${_in[@]}"
+    "${_in}"
   sleep \
     10
   if [[ "${_os}" == "GNU/Linux" ]]; then
