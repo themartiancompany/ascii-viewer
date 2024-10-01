@@ -42,14 +42,32 @@ _requirements() {
   fi
 }
 
-_font_human() {
+_get_share() {
+  echo \
+    "$(_get_usr)/share"
+}
+
+_font_picture() {
   local \
-    _share \
     _font \
     _fonts
+  _fonts="$( \
+    _get_share)/kbd/consolefonts"
+  _font="drdos"
+  _font_path="${_fonts}/${_font}${_height}x${_height}.psfu.gz"
+  echo \
+    "${_font_path}"
+}
+
+_font_human() {
+  local \
+    _height=22 \
+    _font \
+    _fonts \
   _share="$( \
     _get_usr)/share"
-  _fonts="${_share}/kbd/consolefonts"
+  _fonts="$( \
+    _get_share)/kbd/consolefonts"
   _font="${_fonts}/iso02-12x${_height}.psfu.gz"
   echo \
     "${_font}"
@@ -72,9 +90,9 @@ _view_human() {
     "$(_font_human)"
 }
 
-_view_screen() {
+_view_picture() {
   local \
-    _height=22 \
+    _height=8 \
     _setfont \
     _setfont_opts=()
   _setfont_opts+=(
@@ -86,7 +104,7 @@ _view_screen() {
       "setfont")"
   "${_setfont}" \
     "${_setfont_opts[@]}" \
-    "$(_font_human)"
+    "$(_font_picture)"
 }
 
 _ascii_viewer() {
@@ -104,10 +122,15 @@ _ascii_viewer() {
       key \
         back
   elif [[ "${_os}" == "GNU/Linux" ]]; then
-    _view_human
+    _view_picture
   fi
   cat \
     "${_in[@]}"
+  sleep \
+    10
+  if [[ "${_os}" == "GNU/Linux" ]]; then
+    _view_human
+  fi
 }
 
 _set_overrides() {
