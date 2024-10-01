@@ -32,6 +32,13 @@ _requirements() {
   if [[ "${_os}" == "Android" ]]; then
     _check_cmd \
       'sdotool'
+  elif [[ "${_os}" == "GNU/Linux" ]]; then
+    _check_cmd \
+      'setfont' \
+      'kbd'
+    _check_cmd \
+      'showconsolefont' \
+      'kbd'
   fi
 }
 
