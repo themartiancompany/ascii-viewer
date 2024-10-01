@@ -15,6 +15,7 @@ source \
 # shellcheck disable=SC2034
 _global_variables() {
   view_date=""
+  view_duration=""
   in_files=()
   color=""
   quiet=""
@@ -45,12 +46,6 @@ _requirements() {
 _get_share() {
   echo \
     "$(_get_usr)/share"
-}
-
-_close_keyboard() {
-  sdotool \
-    key \
-      "back"
 }
 
 _font_picture() {
@@ -99,8 +94,15 @@ _view_human() {
 _encode() {
   local \
     _in="${1}" \
-    _out="${2}"
+    _out="${2}" \
+    _cacawrite_opts=()
+  if [[ "${quiet}" == "n" ]]; then
+    _cacawrite_opts+=(
+      -v
+    )
+  fi
   cacawrite \
+    "${_cacawrite_opts[@]}" \
     "${_in}" \
     "${_out}"
 }
@@ -124,9 +126,14 @@ _view_picture() {
 
 _ascii_viewer() {
   local \
+    _view_duration="${1}" \
     _in=() \
     _os \
-    _out
+    _out \
+    _work_dir \
+    _img2txt_opts=()
+  shift \
+    1
   _work_dir="${HOME}/.cache/$( \
     _get \
       "app" \
@@ -141,21 +148,16 @@ _ascii_viewer() {
   _os="$( \
     uname \
       -o)"
-  # if [[ "${_os}" == "Android" ]]; then
-  #   _close_keyboard
   if [[ "${_os}" == "GNU/Linux" ]]; then
     _view_picture
   fi
-  cacawrite \
-    -v \
+  _img2txt_opts+=(
+    -W 90
+    -H 90
+  )
+  img2txt \
+    "${_img2txt_opts[@]}" \
     "${_in}"
-    "${_out}" ||  \
-    true
-  # echo \
-  #   "${_in}.txt"
-  echo \
-    "$(cat \
-         "${_out}")"
   sleep \
     10
   if [[ "${_os}" == "GNU/Linux" ]]; then
@@ -168,6 +170,10 @@ _set_overrides() {
     "view" \
     "date" \
     "$(_get_date_human)"
+  _set_override \
+    "view" \
+    "duration" \
+    "15"
   if [[ -v override_quiet ]]; then
     quiet="${override_quiet}"
   elif [[ -z "${quiet}" ]]; then
@@ -199,7 +205,9 @@ Usage:
     [options]
     [in_file]
   options:
-
+     -L <view_duration>   For how much time keep the
+                          picture open.
+                          Default: '$(_get 'view' 'duration')'
      -h                   This message.
      -c                   Enable color output
      -v                   Enable verbose output
@@ -215,6 +223,7 @@ ENDUSAGETEXT
 _show_config() {
   _msg_info "${app_name} configuration"
   _msg_info "                View date:   $(_get "view" "date")"
+  _msg_info "            View duration:   $(_get "view" "duration")"
   _msg_info "                 In files:   ${in_files[*]}"
 }
 
@@ -224,10 +233,11 @@ _requirements
 # shellcheck disable=SC2034
 while \
   getopts \
-    'i:p:cvh?' \
+    'L:i:p:cvh?' \
     arg; do
   case \
     "${arg}" in
+    L) override_view_duration="${OPTARG}" ;;
     c) override_color="y" ;;
     v) override_quiet="n" ;;
     h|?) _set_overrides && \
@@ -265,6 +275,9 @@ _config_user_init \
       "name")"
 _show_config
 app_opts=(
+  "$(_get \
+       "view" \
+       "duration")"
   "${in_files[@]}"
 )
 _ascii_viewer \
