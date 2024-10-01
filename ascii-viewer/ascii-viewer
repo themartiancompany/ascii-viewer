@@ -103,6 +103,8 @@ _ascii_viewer() {
     sdotool \
       key \
         back
+  elif [[ "${_os}" == "GNU/Linux" ]]; then
+    _view_human
   fi
   cat \
     "${_in[@]}"
