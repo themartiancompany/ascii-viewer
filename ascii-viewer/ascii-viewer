@@ -42,6 +42,53 @@ _requirements() {
   fi
 }
 
+_font_human() {
+  local \
+    _share \
+    _font \
+    _fonts
+  _share="$( \
+    _get_usr)/share"
+  _fonts="${_share}/kbd/consolefonts"
+  _font="${_fonts}/iso02-12x${_height}.psfu.gz"
+  echo \
+    "${_font}"
+}
+
+_view_human() {
+  local \
+    _height=22 \
+    _setfont \
+    _setfont_opts=()
+  _setfont_opts+=(
+    -h"${_height}"
+  )
+  _setfont="$( \
+    command \
+      -v \
+      "setfont")"
+  "${_setfont}" \
+    "${_setfont_opts[@]}" \
+    "$(_font_human)"
+}
+
+_view_screen() {
+  local \
+    _height=22 \
+    _setfont \
+    _setfont_opts=()
+  _setfont_opts+=(
+    -h"${_height}"
+  )
+  _setfont="$( \
+    command \
+      -v \
+      "setfont")"
+  "${_setfont}" \
+    "${_setfont_opts[@]}" \
+    "$(_font_human)"
+}
+
 _ascii_viewer() {
   local \
     _in=() \
