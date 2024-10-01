@@ -47,6 +47,12 @@ _get_share() {
     "$(_get_usr)/share"
 }
 
+_close_keyboard() {
+  sdotool \
+    key \
+      "back"
+}
+
 _font_picture() {
   local \
     _font \
@@ -92,18 +98,11 @@ _view_human() {
 
 _encode() {
   local \
-    _out
-  _out="$( \
-    mktemp \
-      --suffix=".txt")"
+    _in="${1}" \
+    _out="${2}"
   cacawrite \
-    -v \
     "${_in}" \
-    "${_out}" || \
-    true
-  _in=(
     "${_out}"
-  )
 }
 
 _view_picture() {
@@ -126,25 +125,37 @@ _view_picture() {
 _ascii_viewer() {
   local \
     _in=() \
-    _os
+    _os \
+    _out
+  _work_dir="${HOME}/.cache/$( \
+    _get \
+      "app" \
+      "name")"
+  mkdir \
+    -p \
+    "${_work_dir}"
+  _out="${_work_dir}/ascii.txt"
   _in+=(
     "$@"
   )
   _os="$( \
     uname \
       -o)"
-  if [[ "${_os}" == "Android" ]]; then
-    sdotool \
-      key \
-        back
-  elif [[ "${_os}" == "GNU/Linux" ]]; then
+  # if [[ "${_os}" == "Android" ]]; then
+  #   _close_keyboard
+  if [[ "${_os}" == "GNU/Linux" ]]; then
     _view_picture
   fi
-  _encode
-  echo \
-    "${_in[*]}"
-  cat \
+  cacawrite \
+    -v \
     "${_in}"
+    "${_out}" ||  \
+    true
+  # echo \
+  #   "${_in}.txt"
+  echo \
+    "$(cat \
+         "${_out}")"
   sleep \
     10
   if [[ "${_os}" == "GNU/Linux" ]]; then
