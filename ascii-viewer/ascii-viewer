@@ -90,6 +90,20 @@ _view_human() {
     "$(_font_human)"
 }
 
+_encode() {
+  local \
+    _out
+  _out="$( \
+    mktemp \
+      --suffix=".txt")"
+  cacawrite \
+    "${_in}" \
+    "${_out}"
+  _in=(
+    "${_out}"
+  )
+}
+
 _view_picture() {
   local \
     _height=8 \
@@ -124,6 +138,7 @@ _ascii_viewer() {
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _view_picture
   fi
+  _encode
   cat \
     "${_in[@]}"
   sleep \
