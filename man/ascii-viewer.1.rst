@@ -21,9 +21,59 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-=====================================
-ASCII Viewer Authors
-=====================================
+===================
+ascii-viewer
+===================
 
-* Pellegrino Prevete <pellegrinoprevete@gmail.com>
-* Truocolo <truocolo@aol.com>
+-------------------------------------
+Cross-platform ASCII viewer
+-------------------------------------
+:Version: ascii-viewer |version|
+:Manual section: 1
+
+
+Synopsis
+========
+
+ascii-viewer *[options]* *file*
+
+
+Description
+===========
+
+Cross-platform ASCII pictures viewer.
+
+On android it depends on sdotool.
+
+It is a dependency for the
+cross-platform 'Picture Viewer'.
+
+Options
+========
+
+-L view_duration        For how much time keep the
+                        picture open.
+
+-h                      This message.
+-c                      Enable color output
+-v                      Enable verbose output
+
+
+Bugs
+====
+
+https://github.com/themartiancompany/ascii-viewer/-/issues
+
+Copyright
+=========
+
+Copyright Pellegrino Prevete. AGPL-3.0.
+
+See also
+========
+
+* picture-viewer
+* libcrash-bash
+* sdotool
+
+.. include:: variables.rst

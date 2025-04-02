@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
+
+# SPDX-License-Identifier: AGPL-3.0
+
+#    ----------------------------------------------------------------------
+#    Copyright © 2024, 2025  Pellegrino Prevete
 #
-# SPDX-License-Identifier: AGPL-3.0-or-later
+#    All rights reserved
+#    ----------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 _bin="$( \
   dirname \
@@ -8,9 +27,14 @@ _bin="$( \
       command \
         -v \
 	  "env")")"
-_lib="${_bin}/../lib"
-source \
-  "${_lib}/libcrash-bash/crash-bash"
+_lib="$( \
+  realpath \
+    "${_bin}/../lib")"
+_crash_bash="${_lib}/libcrash-bash/crash-bash"
+_sourced \
+  "${_crash_bash}" 2>/dev/null || \
+  source \
+    "${_crash_bash}"
 
 # shellcheck disable=SC2034
 _global_variables() {
@@ -198,16 +222,17 @@ _usage() {
       -d '' \
       _usage_text << \
         ENDUSAGETEXT || true
+
 Cross-platform ASCII picture viewer.
 
 Usage:
-  $(_get "app" "name")
+  ${app_name}
     [options]
     [in_file]
   options:
      -L <view_duration>   For how much time keep the
                           picture open.
-                          Default: '$(_get 'view' 'duration')'
+                          Default: '${view_duration}'
      -h                   This message.
      -c                   Enable color output
      -v                   Enable verbose output
@@ -222,8 +247,8 @@ ENDUSAGETEXT
 # Shows configuration options.
 _show_config() {
   _msg_info "${app_name} configuration"
-  _msg_info "                View date:   $(_get "view" "date")"
-  _msg_info "            View duration:   $(_get "view" "duration")"
+  _msg_info "                View date:   ${view_date}"
+  _msg_info "            View duration:   ${view_duration}"
   _msg_info "                 In files:   ${in_files[*]}"
 }
 
@@ -261,7 +286,7 @@ in_files+=(
 )
 if [[ "${in_files[*]}" ==  "" ]]; then
   _msg_error \
-    "no files given" \
+    "No files given." \
     0
   _set_overrides
   _usage \
@@ -269,15 +294,10 @@ if [[ "${in_files[*]}" ==  "" ]]; then
 fi
 _set_overrides
 _config_user_init \
-  "$( \
-    _get \
-      "app" \
-      "name")"
+  "${app_name}"
 _show_config
 app_opts=(
-  "$(_get \
-       "view" \
-       "duration")"
+  "${view_duration}"
   "${in_files[@]}"
 )
 _ascii_viewer \
