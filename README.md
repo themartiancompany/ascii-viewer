@@ -46,6 +46,10 @@ to properly hide the keyboard of the
 terminal environment, when used
 in a framebuffer console.
 
+It is a dependency for
+[Picture Viewer](
+  https://github.com/themartiancompany/picture-viewer).
+
 ### Installation
 
 The program in this source repo
