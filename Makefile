@@ -38,6 +38,7 @@ all:
 check: shellcheck
 
 shellcheck:
+
 	shellcheck -s bash $(SCRIPT_FILES)
 
 install: install-scripts install-doc install-man
